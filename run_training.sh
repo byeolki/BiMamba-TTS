@@ -2,7 +2,9 @@
 
 set -e
 
-python bimamba_tts/cli/train.py --config configs/config.yaml
+export PATH="/root/.local/bin:$PATH"
+
+poetry run python bimamba_tts/cli/train.py --config configs/config.yaml
 
 CHECKPOINT_DIR="experiments/bimamba-tts/checkpoints"
 LATEST_CHECKPOINT="${CHECKPOINT_DIR}/latest.pt"
@@ -25,7 +27,7 @@ for i in "${!SENTENCES[@]}"; do
     TEXT="${SENTENCES[$i]}"
     OUTPUT_FILE="${OUTPUT_DIR}/result_sample_${i}.wav"
 
-    python bimamba_tts/cli/inference.py \
+    poetry run python bimamba_tts/cli/inference.py \
         --config configs/config.yaml \
         --checkpoint "$LATEST_CHECKPOINT" \
         --text "$TEXT" \

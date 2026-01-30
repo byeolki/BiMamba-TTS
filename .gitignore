@@ -1,0 +1,79 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# Poetry
+poetry.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Data
+data/raw/
+data/preprocessed/
+*.wav
+*.mp3
+*.flac
+
+# Experiments & Outputs
+experiments/
+outputs/
+logs/
+checkpoints/
+*.ckpt
+*.pt
+*.pth
+
+# Pretrained models
+pretrained/
+
+# Weights & Biases
+wandb/
+
+# Tensorboard
+runs/
+
+# System
+.cache/
+*.log
+*.tmp
+
+# NLTK data
+nltk_data/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
