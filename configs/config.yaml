@@ -1,0 +1,134 @@
+# Optimized for NVIDIA L40S 48GB GPU
+
+project_name: "bimamba-tts"
+experiment_name: "bimamba-tts"
+seed: 1234
+device: "cuda"
+
+wandb:
+    enabled: true
+    project: "bimamba-tts"
+    entity: null
+
+discord:
+    enabled: true
+    notify_every_n_epochs: 100
+
+paths:
+    root_dir: "."
+    data_dir: "./data"
+    raw_dir: "./data/raw/ljspeech"
+    preprocessed_dir: "./data/preprocessed/ljspeech"
+    checkpoint_dir: "./experiments/${experiment_name}/checkpoints"
+    log_dir: "./experiments/${experiment_name}/logs"
+    output_dir: "./experiments/${experiment_name}/outputs"
+
+audio:
+    sampling_rate: 22050
+    filter_length: 1024
+    hop_length: 256
+    win_length: 1024
+    n_mel_channels: 80
+    mel_fmin: 0.0
+    mel_fmax: 8000.0
+    max_wav_value: 32768.0
+
+    pitch:
+        f0_min: 71.0
+        f0_max: 800.0
+        use_log_scale: true
+
+    energy:
+        use_log_scale: true
+
+model:
+    vocab_size: 158
+    max_seq_len: 1000
+
+    encoder:
+        n_layers: 4
+        d_model: 384
+        d_state: 16
+        d_conv: 4
+        expand: 2
+        dropout: 0.2
+
+    decoder:
+        n_layers: 4
+        d_model: 384
+        d_state: 16
+        d_conv: 4
+        expand: 2
+        dropout: 0.2
+
+    variance_adaptor:
+        duration_predictor:
+            n_layers: 2
+            kernel_size: 3
+            dropout: 0.3
+
+        pitch_predictor:
+            n_layers: 3
+            kernel_size: 3
+            dropout: 0.3
+            n_bins: 256
+            pitch_min: 4.0
+            pitch_max: 7.0
+
+        energy_predictor:
+            n_layers: 2
+            kernel_size: 3
+            dropout: 0.3
+            n_bins: 256
+            energy_min: -4.5
+            energy_max: 6.0
+
+data:
+    dataset_name: "ljspeech"
+    train_split: 0.90
+    val_split: 0.10
+
+    text:
+        cleaners: ["english_cleaners"]
+        add_blank: true
+
+    paths:
+        metadata: "metadata.csv"
+        wavs: "wavs"
+
+train:
+    batch_size: 128
+    accumulate_grad_batches: 1
+    num_workers: 16
+    pin_memory: true
+    prefetch_factor: 4
+
+    epochs: 1000
+    save_every_n_epochs: 10
+    validate_every_n_epochs: 1
+    log_every_n_steps: 100
+
+    optimizer:
+        name: "AdamW"
+        lr: 5e-4
+        betas: [0.9, 0.98]
+        eps: 1e-9
+        weight_decay: 1e-4
+
+    scheduler:
+        name: "noam"
+        warmup_steps: 4000
+
+    mixed_precision: "bf16"
+    gradient_clip_val: 1.0
+
+    loss_weights:
+        mel: 1.0
+        postnet: 1.0
+        duration: 0.3
+        pitch: 0.5
+        energy: 0.2
+
+    early_stopping:
+        patience: 20
+        min_delta: 0.001
